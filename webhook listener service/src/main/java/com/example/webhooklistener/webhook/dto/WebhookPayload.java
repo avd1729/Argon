@@ -7,4 +7,6 @@ import lombok.*;
 @Getter
 @Setter
 public class WebhookPayload {
+
+
 }
