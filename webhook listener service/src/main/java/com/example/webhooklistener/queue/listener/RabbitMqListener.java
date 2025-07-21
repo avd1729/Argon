@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class RabbitMqListener {
 
-    @RabbitListener(queues = "test.queue")
-    public void listen(String message) {
-        System.out.println("Received from RabbitMQ: " + message);
+    @RabbitListener(queues = "webhook.queue")
+    public void handleMessage(String message) {
+        System.out.println("Processing webhook from queue: " + message);
     }
 }
 

@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
 
     @Bean
-    public Queue testQueue() {
-        return new Queue("test.queue", false);
+    public Queue webhookQueue() {
+        return new Queue("webhook.queue", false);
     }
 }
 
