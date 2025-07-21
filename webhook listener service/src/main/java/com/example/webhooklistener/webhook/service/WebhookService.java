@@ -18,7 +18,7 @@ public class WebhookService {
 
     public void addToQueue(Map<String, Object> payload) {
         WebhookPayload payload1 = parseGitHubWebhook(payload);
-        rabbitTemplate.convertAndSend("webhook.queue", payload1); // NO JSON manually
+        rabbitTemplate.convertAndSend("webhook.queue", payload1);
     }
 
     public WebhookPayload parseGitHubWebhook(Map<String, Object> payload) {

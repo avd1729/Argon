@@ -18,7 +18,6 @@ public class WebhookController {
 
     @PostMapping("/api/webhook")
     public ResponseEntity<String> handleWebhook(@RequestBody Map<String, Object> payload) {
-//        System.out.println("Webhook received: " + payload);
         webhookService.addToQueue(payload);
         return ResponseEntity.ok("Webhook received and pushed to RabbitMQ");
     }
