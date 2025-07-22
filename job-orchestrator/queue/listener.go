@@ -46,7 +46,8 @@ func Listen() {
 				log.Println("Error unmarshaling payload:", err)
 				continue
 			}
-			git.CloneAndReadRunnerCI(payload)
+			config := git.CloneAndReadRunnerCI(payload)
+			SendToSandbox(config)
 		}
 	}()
 
