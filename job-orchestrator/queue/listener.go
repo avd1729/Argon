@@ -46,8 +46,20 @@ func Listen() {
 				log.Println("Error unmarshaling payload:", err)
 				continue
 			}
-			config := git.CloneAndReadRunnerCI(payload)
-			SendToSandbox(config)
+			config, meta := git.CloneAndReadRunnerCI(payload)
+
+			// For now, assume we only handle "build" job
+			jobName := "build"
+			job := config.Jobs[jobName]
+
+			sandboxJob := pkg.SandboxPayload{
+				RepoURL:  meta.RepositoryUrl,
+				CommitID: meta.CommitId,
+				JobName:  jobName,
+				Job:      job,
+			}
+
+			SendToSandbox(sandboxJob)
 		}
 	}()
 

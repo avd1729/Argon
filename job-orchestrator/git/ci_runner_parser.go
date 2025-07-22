@@ -12,12 +12,12 @@ import (
 	"path/filepath"
 )
 
-func CloneAndReadRunnerCI(payload pkg.WebhookPayload) pkg.Config {
+func CloneAndReadRunnerCI(payload pkg.WebhookPayload) (pkg.Config, pkg.WebhookPayload) {
 	// Step 1: Create temp dir
 	tempDir, err := os.MkdirTemp("", "repo-*")
 	utils.FailOnError(err, "Failed to create temp directory")
 
-	log.Printf("📦 Cloning repo %s into %s", payload.RepositoryUrl, tempDir)
+	log.Printf("Cloning repo %s into %s", payload.RepositoryUrl, tempDir)
 
 	// Step 2: Clone the repo
 	cmd := exec.Command("git", "clone", payload.RepositoryUrl, tempDir)
@@ -45,5 +45,5 @@ func CloneAndReadRunnerCI(payload pkg.WebhookPayload) pkg.Config {
 	err = yaml.Unmarshal(content, &config)
 	utils.FailOnError(err, "Failed to parse .runnerci.yml")
 
-	return config
+	return config, payload
 }

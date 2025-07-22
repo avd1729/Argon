@@ -10,13 +10,12 @@ import (
 	"os"
 )
 
-func SendToSandbox(config pkg.Config) {
+func SendToSandbox(payload pkg.SandboxPayload) {
 	err := godotenv.Load()
 	utils.FailOnError(err, "Error loading .env file")
 
 	url := os.Getenv("RABBIT_MQ_LISTENER_URL")
 	conn, err := amqp.Dial(url)
-
 	utils.FailOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -25,29 +24,21 @@ func SendToSandbox(config pkg.Config) {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"sandbox.queue", // New queue
-		false,
-		false,
-		false,
-		false,
-		nil,
+		"sandbox.queue",
+		false, false, false, false, nil,
 	)
 	utils.FailOnError(err, "Failed to declare queue")
 
-	// Convert config struct to JSON
-	body, err := json.Marshal(config)
-	utils.FailOnError(err, "Failed to marshal config")
+	body, err := json.Marshal(payload)
+	utils.FailOnError(err, "Failed to marshal sandbox payload")
 
 	err = ch.Publish(
-		"",     // Default exchange
-		q.Name, // Queue name
-		false,
-		false,
+		"", q.Name, false, false,
 		amqp.Publishing{
 			ContentType: "application/json",
 			Body:        body,
 		})
-	utils.FailOnError(err, "Failed to publish message")
+	utils.FailOnError(err, "Failed to publish sandbox message")
 
 	log.Println("Sent job to sandbox.queue")
 }
