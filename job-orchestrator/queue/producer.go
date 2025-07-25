@@ -25,7 +25,7 @@ func SendToSandbox(payload pkg.SandboxPayload) {
 
 	q, err := ch.QueueDeclare(
 		"sandbox.queue",
-		false, false, false, false, nil,
+		true, false, false, false, nil,
 	)
 	utils.FailOnError(err, "Failed to declare queue")
 
