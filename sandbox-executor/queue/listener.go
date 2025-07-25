@@ -1,10 +1,13 @@
 package queue
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/rabbitmq/amqp091-go"
 	"os"
+	"sandbox-executor/pkg"
+	"sandbox-executor/sandbox"
 	"sandbox-executor/utils"
 )
 
@@ -24,7 +27,7 @@ func Listen() {
 
 	q, err := ch.QueueDeclare(
 		"sandbox.queue",
-		false,
+		true,
 		false,
 		false,
 		false,
@@ -45,7 +48,18 @@ func Listen() {
 
 	go func() {
 		for d := range msgs {
-			fmt.Printf("Received a message: %s\n", d.Body)
+			var payload pkg.SandboxPayload
+			if err := json.Unmarshal(d.Body, &payload); err != nil {
+				fmt.Println("Invalid payload:", err)
+				continue
+			}
+			fmt.Println("Running job:", payload.JobName)
+			err := sandbox.RunJobInDocker(payload)
+			if err != nil {
+				fmt.Println("Job failed:", err)
+			} else {
+				fmt.Println("Job finished successfully")
+			}
 		}
 	}()
 
