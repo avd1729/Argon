@@ -1,2 +1,4 @@
 from src.listener import listen
-listen()
+
+if __name__ == "__main__":
+    listen()
