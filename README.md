@@ -36,28 +36,7 @@ This project was born from the idea of **demystifying how CI/CD systems work** a
 
 ## Workflow Overview
 
-```mermaid
-graph TD
-    A[GitHub Push / PR] --> B[Webhook Listener (Spring Boot)]
-    B -->|Validates & Pushes| C[webhook.queue]
-    C -->|Consumes| D[Orchestrator (Go)]
-    D -->|Clones Repo & Parses .runnerci.yml| E[sandbox.queue]
-    E -->|Consumes| F[Sandbox Executor (Go)]
-    F -->|Executes Jobs in Docker| G[notification.queue]
-
-    %% Logging
-    B -->|Logs| L[Logger Service]
-    D -->|Logs| L
-    F -->|Logs| L
-
-    %% Notification
-    G -->|Consumes| H[Notification Service (Python)]
-    H -->|Sends Email via AWS SES| I[Developer]
-
-    %% Persistent Logging
-    L -->|Persists Logs| J[MongoDB]
-
-```
+<img width="1669" height="3845" alt="Untitled diagram _ Mermaid Chart-2025-07-26-124534" src="https://github.com/user-attachments/assets/4273c6a4-0f8f-4213-b528-da2506938376" />
 
 ---
 
