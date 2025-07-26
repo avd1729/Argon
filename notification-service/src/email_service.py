@@ -22,7 +22,7 @@ def send_email(body: str):
         },
         Message={
             "Subject": {
-                "Data": "Hello from SES",
+                "Data": "CI Run Results",
                 "Charset": "UTF-8"
             },
             "Body": {
