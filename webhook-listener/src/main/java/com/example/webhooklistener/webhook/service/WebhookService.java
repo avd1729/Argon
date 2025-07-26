@@ -1,7 +1,8 @@
 package com.example.webhooklistener.webhook.service;
 
+import com.example.webhooklistener.enums.RMQueue;
+import com.example.webhooklistener.queue.producer.Producer;
 import com.example.webhooklistener.webhook.dto.WebhookPayload;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -10,15 +11,26 @@ import java.util.Map;
 @Service
 public class WebhookService {
 
-    private final RabbitTemplate rabbitTemplate;
+    private final Producer producer;
 
-    public WebhookService(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
+    public WebhookService(Producer producer) {
+        this.producer = producer;
     }
 
     public void addToQueue(Map<String, Object> payload) {
-        WebhookPayload payload1 = parseGitHubWebhook(payload);
-        rabbitTemplate.convertAndSend("webhook.queue", payload1);
+        try {
+            WebhookPayload payload1 = parseGitHubWebhook(payload);
+            // Log the payload
+            producer.pushToQueue(RMQueue.LOGGER_QUEUE, payload1);
+            producer.pushToQueue(RMQueue.WEBHOOK_QUEUE, payload1);
+            String response = "Webhook received and pushed to RabbitMQ";
+            producer.pushToQueue(RMQueue.LOGGER_QUEUE, response);
+        } catch (Exception e) {
+            // Log the exception
+            producer.pushToQueue(RMQueue.LOGGER_QUEUE, e);
+            throw new RuntimeException(e);
+        }
+
     }
 
     public WebhookPayload parseGitHubWebhook(Map<String, Object> payload) {

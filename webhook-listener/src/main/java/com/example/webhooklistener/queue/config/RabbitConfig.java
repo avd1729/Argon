@@ -39,4 +39,9 @@ public class RabbitConfig {
     public Queue webhookQueue() {
         return new Queue("webhook.queue", true);
     }
+
+    @Bean
+    public Queue loggerQueue(){
+        return new Queue("log.queue", true);
+    }
 }
