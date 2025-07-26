@@ -23,17 +23,11 @@ func SendToSandbox(payload pkg.SandboxPayload) {
 	utils.FailOnError(err, "Failed to open channel")
 	defer ch.Close()
 
-	q, err := ch.QueueDeclare(
-		"sandbox.queue",
-		true, false, false, false, nil,
-	)
-	utils.FailOnError(err, "Failed to declare queue")
-
 	body, err := json.Marshal(payload)
 	utils.FailOnError(err, "Failed to marshal sandbox payload")
 
 	err = ch.Publish(
-		"", q.Name, false, false,
+		"", string(pkg.SandboxQueue), false, false,
 		amqp.Publishing{
 			ContentType: "application/json",
 			Body:        body,
@@ -41,4 +35,21 @@ func SendToSandbox(payload pkg.SandboxPayload) {
 	utils.FailOnError(err, "Failed to publish sandbox message")
 
 	log.Println("Sent job to sandbox.queue")
+
+	logPayload := map[string]interface{}{
+		"event":   "job_dispatched",
+		"target":  string(pkg.SandboxQueue),
+		"payload": payload,
+	}
+	logBody, err := json.Marshal(logPayload)
+	utils.FailOnError(err, "Failed to marshal logger payload")
+
+	err = ch.Publish(
+		"", string(pkg.LoggerQueue), false, false,
+		amqp.Publishing{
+			ContentType: "application/json",
+			Body:        logBody,
+		})
+	utils.FailOnError(err, "Failed to publish log message")
+	log.Println("Sent log to log.queue")
 }
