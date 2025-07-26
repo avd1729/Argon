@@ -44,4 +44,14 @@ public class RabbitConfig {
     public Queue loggerQueue(){
         return new Queue("log.queue", true);
     }
+
+    @Bean
+    public Queue sandBoxQueue(){
+        return new Queue("sandbox.queue", true);
+    }
+
+    @Bean
+    public Queue notificationQueue(){
+        return new Queue("notification.queue", true);
+    }
 }

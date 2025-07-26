@@ -25,18 +25,8 @@ func Listen() {
 	utils.FailOnError(err, "Failed to open a channel")
 	defer ch.Close()
 
-	q, err := ch.QueueDeclare(
-		"sandbox.queue",
-		true,
-		false,
-		false,
-		false,
-		nil,
-	)
-	utils.FailOnError(err, "Failed to declare a queue")
-
 	msgs, err := ch.Consume(
-		q.Name,
+		string(pkg.SandboxQueue),
 		"",
 		true,
 		false,
