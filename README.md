@@ -164,9 +164,6 @@ Also planned:
 * Google Cloud Build
 
 ---
-Here’s a small section you can add to your README:
-
----
 
 ### Want a Deployed Version?
 
