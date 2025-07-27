@@ -162,3 +162,17 @@ Also planned:
 * Drone CI
 * Temporal workflows
 * Google Cloud Build
+
+---
+Here’s a small section you can add to your README:
+
+---
+
+### Want a Deployed Version?
+
+If you're interested in using a **hosted/deployed version** of Argon instead of running it locally, let me know!
+Drop a comment on [this GitHub issue](https://github.com/avd1729/Argon/issues/2) — if there's enough interest, I’ll prioritize spinning up a public instance.
+
+
+
+  
